@@ -1,102 +1,121 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
+<!-- Define el tipo de documento como HTML5 -->
 <html lang="es">
+<!-- Inicio del documento en idioma español -->
 <head>
+  <!-- Define la codificación de caracteres a UTF-8 para permitir tildes y caracteres especiales -->
   <meta charset="UTF-8">
+  <!-- Configura la vista adaptable para dispositivos móviles y diferentes pantallas -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Título que aparece en la pestaña del navegador -->
   <title>💖 Un correo para ti by MCR 💖</title>
   
+  <!-- Preconecta con los servidores de fuentes de Google para cargar más rápido -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Carga las fuentes tipográficas 'Dancing Script' (estilo carta/cursiva) y 'Poppins' -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Carga la librería de íconos FontAwesome para los botones y detalles visuales -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Inicio de los estilos CSS -->
   <style>
+    /* Variables globales CSS para reutilizar colores fácilmente en todo el diseño */
     :root {
-      --primary-color: #ff4f81;
-      --primary-hover: #e03867;
-      --bg-gradient: linear-gradient(135deg, #ffe6eb 0%, #ffd1dc 100%);
-      --card-bg: #fffdfa;
-      --text-dark: #333333;
-      --letter-text: #2c2c2c;
+      --primary-color: #ff4f81; /* Color rosa principal para botones e íconos */
+      --primary-hover: #e03867; /* Color cuando se pasa el cursor sobre los botones */
+      --bg-gradient: linear-gradient(135deg, #ffe6eb 0%, #ffd1dc 100%); /* Fondo degradado suave */
+      --card-bg: #fffdfa; /* Color de fondo del papel de la carta */
+      --text-dark: #333333; /* Color de texto oscuro general */
+      --letter-text: #2c2c2c; /* Color del texto escrito en la carta */
     }
 
+    /* Reset básico: elimina márgenes por defecto y asegura que el tamaño de los elementos sea exacto */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    /* Estilo del cuerpo de la página web */
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg-gradient);
-      min-height: 100vh;
-      display: flex;
+      font-family: 'Poppins', sans-serif; /* Tipografía principal */
+      background: var(--bg-gradient); /* Aplica el fondo degradado */
+      min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
+      display: flex; /* Utiliza flexbox para centrar todo el contenido */
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
+      align-items: center; /* Centrado horizontal */
+      justify-content: center; /* Centrado vertical */
+      overflow-x: hidden; /* Evita que aparezca la barra de desplazamiento horizontal */
       color: var(--text-dark);
       padding: 20px 10px;
       position: relative;
     }
 
+    /* Contenedor de los botones flotantes de control de audio en la esquina superior derecha */
     .controls-container {
-      position: fixed;
+      position: fixed; /* Mantiene los controles fijos en la pantalla */
       top: 20px;
       right: 20px;
-      z-index: 100;
+      z-index: 100; /* Asegura que estén por encima de todo el contenido */
       display: flex;
-      gap: 10px;
+      gap: 10px; /* Espacio entre el botón de voz y el de música */
     }
 
+    /* Estilo de los botones flotantes redondos (música y voz) */
     .audio-control {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.85); /* Fondo blanco semi-transparente */
+      backdrop-filter: blur(8px); /* Efecto de desenfoque estilo cristal */
       border: 2px solid #ffccd5;
       color: var(--primary-color);
       width: 48px;
       height: 48px;
-      border-radius: 50%;
+      border-radius: 50%; /* Hace que el botón sea completamente redondo */
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(255, 79, 129, 0.2);
-      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 79, 129, 0.2); /* Sombra rosada */
+      transition: all 0.3s ease; /* Transición suave para animaciones */
       font-size: 1.2rem;
     }
 
+    /* Efecto al pasar el cursor por encima del botón de control de audio */
     .audio-control:hover {
-      transform: scale(1.1);
+      transform: scale(1.1); /* Aumenta ligeramente el tamaño */
       background: #ffffff;
       box-shadow: 0 6px 20px rgba(255, 79, 129, 0.35);
     }
 
+    /* Tamaño y ajuste de los íconos SVG dentro de los controles */
     .audio-control svg {
       width: 22px;
       height: 22px;
       fill: currentColor;
     }
 
+    /* Estilo general para cada una de las pantallas o pasos del proceso */
     .screen {
-      display: none;
+      display: none; /* Por defecto están ocultas */
       width: 100%;
       max-width: 650px;
       text-align: center;
-      opacity: 0;
+      opacity: 0; /* Invisibles hasta que se activan */
       transform: scale(0.92) translateY(10px);
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Clase que se añade mediante JavaScript a la pantalla que debe mostrarse */
     .screen.active {
-      display: flex;
+      display: flex; /* Se muestra con flexbox */
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      opacity: 1;
-      transform: scale(1) translateY(0);
+      opacity: 1; /* Se vuelve totalmente visible */
+      transform: scale(1) translateY(0); /* Vuelve a su tamaño normal */
     }
 
+    /* Estilo de los títulos arriba de cada tarjeta o regalo */
     .step-title {
       font-size: 1.8rem;
       font-weight: 600;
@@ -106,6 +125,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* Caja interactiva que rodea la ilustración en cada paso */
     .interactive-stage {
       background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(10px);
@@ -119,12 +139,14 @@
       position: relative;
     }
 
+    /* Efecto al pasar el mouse por la tarjeta interactiva */
     .interactive-stage:hover {
-      transform: translateY(-5px);
+      transform: translateY(-5px); /* Eleva la tarjeta ligeramente */
       box-shadow: 0 15px 35px rgba(200, 80, 110, 0.25);
       background: rgba(255, 255, 255, 0.9);
     }
 
+    /* Contenedor del dibujo vectorial (SVG) de cada paso */
     .svg-wrapper {
       width: 200px;
       height: 200px;
@@ -142,10 +164,12 @@
       transition: transform 0.4s ease;
     }
 
+    /* Animación de inclinación de los dibujos SVG al pasar el cursor */
     .interactive-stage:hover .svg-wrapper svg {
       transform: scale(1.08) rotate(2deg);
     }
 
+    /* Etiqueta flotante con mensaje tipo "Haz clic para continuar" */
     .click-hint {
       display: inline-block;
       margin-top: 15px;
@@ -155,15 +179,17 @@
       background: #ffe6ed;
       padding: 8px 18px;
       border-radius: 20px;
-      animation: pulse 1.8s infinite;
+      animation: pulse 1.8s infinite; /* Efecto de palpitación constante */
     }
 
+    /* Animación del efecto de palpitación (pulse) */
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
 
+    /* Estilo del botón principal de la pantalla inicial */
     .start-btn {
       background: var(--primary-color);
       color: #ffffff;
@@ -187,20 +213,23 @@
       box-shadow: 0 12px 30px rgba(255, 79, 129, 0.5);
     }
 
+    /* Contenedor específico para la pantalla final que muestra la carta escrita */
     .screen-letter-container {
       width: 100%;
       max-width: 750px;
     }
 
+    /* Diseño que simula una hoja de libreta/cuaderno para la carta */
     .notebook-paper {
       background: var(--card-bg);
+      /* Líneas horizontales del libreto */
       background-image: repeating-linear-gradient(
         transparent,
         transparent 31px,
         #e2d5de 31px,
         #e2d5de 32px
       );
-      line-height: 32px;
+      line-height: 32px; /* Alineación del texto exactamente con las líneas */
       border-radius: 4px;
       padding: 40px 45px 40px 65px;
       border-left: 3px double #ffb3c1;
@@ -213,6 +242,7 @@
       margin-bottom: 30px;
     }
 
+    /* Línea vertical roja del margen izquierdo del cuaderno */
     .notebook-paper::before {
       content: '';
       position: absolute;
@@ -223,6 +253,7 @@
       background-color: #ff9ebb;
     }
 
+    /* Estilo del saludo inicial dentro de la carta */
     .notebook-paper h3 {
       font-family: 'Dancing Script', cursive;
       font-size: 2.3rem;
@@ -231,6 +262,7 @@
       font-weight: 700;
     }
 
+    /* Estilo de los párrafos dentro de la carta */
     .notebook-paper p {
       font-family: 'Dancing Script', cursive;
       font-size: 1.55rem;
@@ -239,12 +271,14 @@
       word-spacing: 2px;
     }
 
+    /* Firma final al terminar el texto de la carta */
     .letter-signature {
       text-align: right;
       font-weight: 700;
       margin-top: 20px;
     }
 
+    /* Botón para volver al inicio desde la carta */
     .return-btn {
       background: var(--primary-color);
       color: #ffffff;
@@ -267,16 +301,18 @@
       box-shadow: 0 8px 25px rgba(255, 79, 129, 0.45);
     }
 
+    /* Lienzo sobrepuesto donde flotan los corazones animados */
     #hearts-canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      pointer-events: none;
+      pointer-events: none; /* Permite hacer clic en los botones detrás del canvas */
       z-index: 10;
     }
 
+    /* Reglas de diseño para pantallas móviles pequeñas */
     @media (max-width: 600px) {
       .step-title {
         font-size: 1.5rem;
@@ -309,22 +345,27 @@
 </head>
 <body>
 
-  <!-- Audio limpio con nombre corto -->
+  <!-- Etiqueta de audio que reproduce el archivo cancion.mp3 -->
   <audio id="bgAudio" src="cancion.mp3" preload="auto" loop></audio>
 
+  <!-- Botones fijos para controlar el audio en pantalla -->
   <div class="controls-container">
+    <!-- Botón para iniciar o pausar la lectura de voz -->
     <button class="audio-control" id="voiceToggle" title="Leer carta en voz alta" onclick="toggleSpeech()">
       <svg id="voiceIcon" viewBox="0 0 24 24">
         <path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.77 1.29 6 2H3zm12.5-11c.83 1.15.83 2.85 0 4l1.5 1.5c1.86-1.86 1.86-4.88 0-6.75l-1.5 1.25zm2.5-2.5l1.5-1.5c3.12 3.12 3.12 8.19 0 11.31l-1.5-1.5c2.34-2.34 2.34-6.14 0-8.31z"/>
       </svg>
     </button>
+    <!-- Botón para reproducir o pausar la música de fondo -->
     <button class="audio-control" id="audioToggle" title="Música" onclick="toggleAudio()">
       <i class="fa-solid fa-music"></i>
     </button>
   </div>
 
+  <!-- Canvas transparente para dibujar las partículas de corazones -->
   <canvas id="hearts-canvas"></canvas>
 
+  <!-- Paso 0: Corazón inicial para abrir la experiencia -->
   <div class="screen active" id="screen0">
     <h2 class="step-title">Tienes un mensaje especial 💖</h2>
     <div class="interactive-stage" onclick="startExperience()">
@@ -340,6 +381,7 @@
     </div>
   </div>
 
+  <!-- Paso 1: Aviso de correo -->
   <div class="screen" id="screen1">
     <h2 class="step-title">Hola cherry, te llegó un correo revisalo 📬</h2>
     <div class="interactive-stage" onclick="nextScreen(2)">
@@ -356,6 +398,7 @@
     </div>
   </div>
 
+  <!-- Paso 2: Sobre cerrado con corazón -->
   <div class="screen" id="screen2">
     <h2 class="step-title"> ohh!! Es Una cartita para ti 🙈 💌</h2>
     <div class="interactive-stage" onclick="nextScreen(3)">
@@ -371,6 +414,7 @@
     </div>
   </div>
 
+  <!-- Paso 3: Sobre abriéndose -->
   <div class="screen" id="screen3">
     <h2 class="step-title">¡Ábrelo! ✨</h2>
     <div class="interactive-stage" onclick="nextScreen(4)">
@@ -388,6 +432,7 @@
     </div>
   </div>
 
+  <!-- Paso 4: Carta saliendo del sobre -->
   <div class="screen" id="screen4">
     <h2 class="step-title">¿Qué dirá? 💭</h2>
     <div class="interactive-stage" onclick="nextScreen(5)">
@@ -405,6 +450,7 @@
     </div>
   </div>
 
+  <!-- Paso 5: Contenido escrito de la carta -->
   <div class="screen screen-letter-container" id="screen5">
     <div class="notebook-paper" id="letterContent">
       <h3>Querida cherry,</h3>
@@ -413,10 +459,11 @@
       <p>Quiero que sepas algo muy importante: te amo. Te amo por lo que eres, por tu manera de hacerme sentir y por esos pequeños detalles tuyos que quizá para ti sean simples, pero para mí significan muchísimo. No necesito que todo sea perfecto; me basta con que podamos ser sinceros, cuidarnos y seguir creando recuerdos bonitos juntos.</p>
       <p>Eres mi persona favorita, esa persona a la que quiero contarle mis cosas, con quien quiero compartir mis alegrías y a quien también quisiera acompañar en los días difíciles. Me gusta saber de ti, escucharte, hacerte reír y recordarte que no tienes que enfrentar todo a solas. Quiero ser alguien que te dé tranquilidad, cariño y motivos para sonreír.</p>
       <p>Te admiro y te valoro más de lo que a veces sé expresar. Gracias por ser tú, por cada conversación, por cada risa y por cada instante que se vuelve especial simplemente porque estás en él. Ojalá nunca dudes de lo importante que eres para mí. Si alguna vez no encuentro las palabras correctas, recuerda esto: mi cariño por ti es sincero, te llevo en mi corazón y me hace muy feliz tenerte en mi vida.</p>
-      <p>Te amo muchísimo, mi niña bonita. Eres mi persona favorita y alguien que ocupa un lugar muy especial en mi corazón. 💗</p>
-      <p class="letter-signature">macro 💌</p>
+      <p>Te amo muchísimo, mi niña bonita. Eres mi persona favorita y alguien que ocupa un lugar muy especial en mi corazón y con esta carta  me declaro hacia ti se que es inprevisto pero espero que podamos conocernos mucho más te quiero. 💗</p>
+      <p class="letter-signature">atentamente: macro 💌</p>
     </div>
 
+    <!-- Botón al final de la carta para reiniciar -->
     <div>
       <button class="return-btn" onclick="nextScreen(1)">
         <i class="fa-solid fa-rotate-left"></i> Regresar al inicio
@@ -424,17 +471,22 @@
     </div>
   </div>
 
+  <!-- Código JavaScript que controla las interacciones -->
   <script>
-    let isPlaying = false; 
-    let currentScreen = 0; 
+    // Variables globales de estado
+    let isPlaying = false; // Indica si la música se está reproduciendo
+    let currentScreen = 0; // Registra el paso o pantalla actual
 
+    // Obtención de elementos del HTML por su ID
     const audioBtn = document.getElementById('audioToggle'); 
     const voiceBtn = document.getElementById('voiceToggle'); 
     const bgAudio = document.getElementById('bgAudio');
 
+    // Vectores SVG en texto para alternar el ícono del botón de voz (hablando vs mutear)
     const svgPersonSpeaking = `<svg viewBox="0 0 24 24"><path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.77 1.29 6 2H3zm12.5-11c.83 1.15.83 2.85 0 4l1.5 1.5c1.86-1.86 1.86-4.88 0-6.75l-1.5 1.25zm2.5-2.5l1.5-1.5c3.12 3.12 3.12 8.19 0 11.31l-1.5-1.5c2.34-2.34 2.34-6.14 0-8.31z"/></svg>`;
     const svgMuteSpeaking = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
 
+    // Genera un sonido sintético corto tipo "pop/clic" mediante el sintetizador del navegador
     function playClickSound() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -452,12 +504,13 @@
       } catch (e) {}
     }
 
+    // Función encargada de iniciar la música de fondo
     function startMusic() {
       if (bgAudio) {
-        bgAudio.volume = 0.5;
+        bgAudio.volume = 0.05; // VOLUMEN BAJADO AL 5% (0.05) para que suene suave
         bgAudio.play().then(() => {
           isPlaying = true;
-          audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+          audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; // Cambia el ícono a sonido activo
           audioBtn.style.color = '#ff2a66';
         }).catch(err => {
           console.log("Esperando toque del usuario para iniciar audio");
@@ -465,15 +518,17 @@
       }
     }
 
+    // Detiene o pausa la música de fondo
     function stopMusic() {
       if (bgAudio) {
         bgAudio.pause();
         isPlaying = false;
-        audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+        audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>'; // Restaura el ícono a nota musical
         audioBtn.style.color = 'var(--primary-color)';
       }
     }
 
+    // Alterna entre reproducir y pausar la música al pulsar el botón del parlante
     function toggleAudio() {
       playClickSound();
       if (isPlaying) {
@@ -483,33 +538,37 @@
       }
     }
 
-    let isSpeaking = false; 
+    let isSpeaking = false; // Estado de la lectura de voz automatizada
     
+    // Inicia la voz sintetizada del navegador para leer el texto de la carta
     function startSpeech() {
       if (!('speechSynthesis' in window)) return; 
-      window.speechSynthesis.cancel(); 
+      window.speechSynthesis.cancel(); // Cancela cualquier audio previo
       
       const textToRead = document.getElementById("letterContent").innerText; 
       const utterance = new SpeechSynthesisUtterance(textToRead); 
-      utterance.lang = 'es-ES'; 
-      utterance.rate = 0.95; 
+      utterance.lang = 'es-ES'; // Configura la voz en idioma español
+      utterance.rate = 0.95; // Velocidad de lectura ligeramente pausada
       utterance.pitch = 1.0; 
 
+      // Evento que se ejecuta al iniciar la lectura por voz
       utterance.onstart = function() {
         isSpeaking = true;
         voiceBtn.innerHTML = svgMuteSpeaking; 
         voiceBtn.style.color = '#ff2a66'; 
       };
 
+      // Evento que se ejecuta cuando termina de leer toda la carta
       utterance.onend = function() {
         isSpeaking = false;
         voiceBtn.innerHTML = svgPersonSpeaking; 
         voiceBtn.style.color = 'var(--primary-color)'; 
       };
 
-      window.speechSynthesis.speak(utterance); 
+      window.speechSynthesis.speak(utterance); // Inicia la reproducción
     }
 
+    // Activa o detiene la lectura de la carta por voz
     function toggleSpeech() {
       playClickSound(); 
       if (!('speechSynthesis' in window)) {
@@ -517,7 +576,7 @@
         return;
       }
 
-      if (currentScreen !== 5) return;
+      if (currentScreen !== 5) return; // Solo permite leer por voz en el paso de la carta
 
       if (isSpeaking) {
         window.speechSynthesis.cancel(); 
@@ -529,12 +588,14 @@
       }
     }
 
+    // Inicia toda la experiencia interactiva desde la primera pantalla
     function startExperience() {
       playClickSound(); 
       startMusic(); 
       nextScreen(1); 
     }
 
+    // Pasa secuencialmente de una pantalla a otra
     function nextScreen(num) {
       playClickSound(); 
       currentScreen = num; 
@@ -543,11 +604,13 @@
         startMusic(); 
       }
 
+      // Oculta la pantalla actual quitando la clase 'active'
       const current = document.querySelector(".screen.active"); 
       if (current) {
         current.classList.remove("active"); 
       }
 
+      // Muestra la siguiente pantalla añadiendo la clase 'active'
       const next = document.getElementById("screen" + num); 
       if (next) {
         setTimeout(() => {
@@ -555,12 +618,14 @@
         }, 150);
       }
 
+      // Si es el paso 5 (la carta final)
       if (num === 5) {
-        burstHearts(); 
+        burstHearts(); // Lanza ráfaga de corazones
         setTimeout(() => {
-          startSpeech();
+          startSpeech(); // Comienza a leer automáticamente la carta
         }, 600);
       } else {
+        // Si no está en la carta, detiene la voz si estaba leyendo
         if (isSpeaking || window.speechSynthesis) {
           window.speechSynthesis.cancel(); 
           isSpeaking = false;
@@ -570,10 +635,12 @@
       }
     }
 
+    // Configuración del canvas de animación de corazones
     const canvas = document.getElementById("hearts-canvas"); 
     const ctx = canvas.getContext("2d"); 
-    let hearts = []; 
+    let hearts = []; // Arreglo que almacena los corazones activos
 
+    // Redimensiona el canvas para cubrir el 100% de la ventana
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -582,6 +649,7 @@
     window.addEventListener("resize", resizeCanvas); 
     resizeCanvas(); 
 
+    // Clase que define las propiedades y comportamientos de cada corazón flotante
     class Heart {
       constructor(x, y, isBurst = false) {
         this.x = x || Math.random() * canvas.width; 
@@ -594,12 +662,14 @@
         this.rotation = Math.random() * Math.PI; 
       }
 
+      // Actualiza la posición y opacidad del corazón frame por frame
       update() {
         this.y += this.speedY; 
         this.x += Math.sin(this.y * 0.02) + this.speedX; 
         this.opacity -= 0.003; 
       }
 
+      // Dibuja la forma de un corazón en la pantalla
       draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -621,19 +691,23 @@
       }
     }
 
+    // Genera una ráfaga masiva de 25 corazones (al abrir la carta)
     function burstHearts() {
       for (let i = 0; i < 25; i++) {
         hearts.push(new Heart(canvas.width / 2 + (Math.random() * 200 - 100), canvas.height / 2 + 100, true));
       }
     }
 
+    // Ciclo de animación principal que renderiza continuamente los corazones
     function animateHearts() {
       ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
+      // Crea de forma continua nuevos corazones en el fondo
       if (Math.random() < 0.08) {
         hearts.push(new Heart()); 
       }
 
+      // Recorre el arreglo de corazones para dibujarlos y descartar los desvanecidos
       for (let i = hearts.length - 1; i >= 0; i--) {
         hearts[i].update(); 
         hearts[i].draw(); 
@@ -643,10 +717,10 @@
         }
       }
 
-      requestAnimationFrame(animateHearts); 
+      requestAnimationFrame(animateHearts); // Llama al siguiente fotograma de la animación
     }
 
-    animateHearts(); 
+    animateHearts(); // Inicia el bucle de animación
   </script>
 </body>
 </html>
