@@ -5,30 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>💖 Un correo para ti by MCR 💖</title>
   
-  <!-- Fonts: Dancing Script for handwritten letter & Poppins for UI -->
+  <!-- Carga de fuentes tipográficas desde Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   
-  <!-- FontAwesome Icons for controls -->
+  <!-- Carga de la librería FontAwesome para el icono de música -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+    /* Variables globales de colores y temas */
     :root {
-      --primary-color: #ff4f81;
-      --primary-hover: #e03867;
-      --bg-gradient: linear-gradient(135deg, #ffe6eb 0%, #ffd1dc 100%);
-      --card-bg: #fffdfa;
-      --text-dark: #333333;
-      --letter-text: #2c2c2c;
+      --primary-color: #ff4f81; /* Color rosado principal */
+      --primary-hover: #e03867; /* Color al pasar el cursor */
+      --bg-gradient: linear-gradient(135deg, #ffe6eb 0%, #ffd1dc 100%); /* Fondo degradado pastel */
+      --card-bg: #fffdfa; /* Color de papel crema */
+      --text-dark: #333333; /* Texto general */
+      --letter-text: #2c2c2c; /* Texto de la carta */
     }
 
+    /* Reseteo básico de margenes */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+    /* Estilos del cuerpo principal */
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--bg-gradient);
@@ -43,7 +46,7 @@
       position: relative;
     }
 
-    /* Ambient Music & Speech Control Buttons Container */
+    /* Contenedor fijo para los botones superiores de control */
     .controls-container {
       position: fixed;
       top: 20px;
@@ -53,6 +56,7 @@
       gap: 10px;
     }
 
+    /* Estilo de los botones flotantes (voz y música) */
     .audio-control {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(8px);
@@ -70,19 +74,21 @@
       font-size: 1.2rem;
     }
 
+    /* Efecto al pasar el cursor sobre los botones */
     .audio-control:hover {
       transform: scale(1.1);
       background: #ffffff;
       box-shadow: 0 6px 20px rgba(255, 79, 129, 0.35);
     }
 
+    /* Ajuste de tamaño para iconos SVG dentro de botones */
     .audio-control svg {
       width: 22px;
       height: 22px;
       fill: currentColor;
     }
 
-    /* Screen Containers */
+    /* Estructura base de cada pantalla de la carta */
     .screen {
       display: none;
       width: 100%;
@@ -93,6 +99,7 @@
       transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Clase activa para mostrar la pantalla actual con animación */
     .screen.active {
       display: flex;
       flex-direction: column;
@@ -102,7 +109,7 @@
       transform: scale(1) translateY(0);
     }
 
-    /* Step Titles */
+    /* Titulos de cada paso */
     .step-title {
       font-size: 1.8rem;
       font-weight: 600;
@@ -112,7 +119,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Interactive Envelope Stage Cards */
+    /* Tarjetas interactivas de los sobres */
     .interactive-stage {
       background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(10px);
@@ -126,13 +133,14 @@
       position: relative;
     }
 
+    /* Animación de elevación al hacer hover en el sobre */
     .interactive-stage:hover {
       transform: translateY(-5px);
       box-shadow: 0 15px 35px rgba(200, 80, 110, 0.25);
       background: rgba(255, 255, 255, 0.9);
     }
 
-    /* SVG Illustration Container */
+    /* Contenedor de las ilustraciones SVG */
     .svg-wrapper {
       width: 200px;
       height: 200px;
@@ -154,6 +162,7 @@
       transform: scale(1.08) rotate(2deg);
     }
 
+    /* Etiqueta animada para pulsar */
     .click-hint {
       display: inline-block;
       margin-top: 15px;
@@ -166,13 +175,14 @@
       animation: pulse 1.8s infinite;
     }
 
+    /* Animación del latido en las etiquetas de aviso */
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
 
-    /* Start Button for Intro Screen */
+    /* Botón de inicio en la pantalla de bienvenida */
     .start-btn {
       background: var(--primary-color);
       color: #ffffff;
@@ -196,12 +206,13 @@
       box-shadow: 0 12px 30px rgba(255, 79, 129, 0.5);
     }
 
-    /* Screen 5: Realistic Notebook Paper Letter */
+    /* Contenedor del papel de libreta final */
     .screen-letter-container {
       width: 100%;
       max-width: 750px;
     }
 
+    /* Diseño visual estilo hoja de libreta */
     .notebook-paper {
       background: var(--card-bg);
       background-image: repeating-linear-gradient(
@@ -223,7 +234,7 @@
       margin-bottom: 30px;
     }
 
-    /* Red vertical margin line like real lined notebook paper */
+    /* Línea margen roja vertical del papel de cuaderno */
     .notebook-paper::before {
       content: '';
       position: absolute;
@@ -256,7 +267,7 @@
       margin-top: 20px;
     }
 
-    /* Return Button */
+    /* Botón para reiniciar y regresar al inicio */
     .return-btn {
       background: var(--primary-color);
       color: #ffffff;
@@ -279,7 +290,7 @@
       box-shadow: 0 8px 25px rgba(255, 79, 129, 0.45);
     }
 
-    /* Floating Hearts Canvas */
+    /* Lienzo invisible para las partículas de corazones flotantes */
     #hearts-canvas {
       position: fixed;
       top: 0;
@@ -290,7 +301,7 @@
       z-index: 10;
     }
 
-    /* Mobile Responsive Tweaks */
+    /* Adaptación para pantallas de teléfonos celulares */
     @media (max-width: 600px) {
       .step-title {
         font-size: 1.5rem;
@@ -325,22 +336,22 @@
 
   <!-- Contenedor de Botones Flotantes (Lector de Voz e Icono de Música) -->
   <div class="controls-container">
-    <!-- Botón Lector de Voz con SVG nativo de persona hablando -->
+    <!-- Botón Lector de Voz con SVG de persona hablando -->
     <button class="audio-control" id="voiceToggle" title="Leer carta en voz alta" onclick="toggleSpeech()">
       <svg id="voiceIcon" viewBox="0 0 24 24">
         <path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.77 1.29 6 2H3zm12.5-11c.83 1.15.83 2.85 0 4l1.5 1.5c1.86-1.86 1.86-4.88 0-6.75l-1.5 1.25zm2.5-2.5l1.5-1.5c3.12 3.12 3.12 8.19 0 11.31l-1.5-1.5c2.34-2.34 2.34-6.14 0-8.31z"/>
       </svg>
     </button>
-    <!-- Botón de Música -->
+    <!-- Botón de Música de fondo -->
     <button class="audio-control" id="audioToggle" title="Música" onclick="toggleAudio()">
       <i class="fa-solid fa-music"></i>
     </button>
   </div>
 
-  <!-- Floating Hearts Particles Canvas -->
+  <!-- Canvas para animación de corazones -->
   <canvas id="hearts-canvas"></canvas>
 
-  <!-- SCREEN INTRO: PORTADA PARA ACTIVAR LA MÚSICA DE INMEDIATO -->
+  <!-- PANTALLA INTRO: PORTADA PARA INICIAR LA EXPERIENCIA -->
   <div class="screen active" id="screen0">
     <h2 class="step-title">Tienes un mensaje especial 💖</h2>
     <div class="interactive-stage" onclick="startExperience()">
@@ -356,7 +367,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 1 -->
+  <!-- PANTALLA 1: BUZÓN -->
   <div class="screen" id="screen1">
     <h2 class="step-title">Hola, te llegó un correo 📬</h2>
     <div class="interactive-stage" onclick="nextScreen(2)">
@@ -373,7 +384,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 2 -->
+  <!-- PANTALLA 2: SOBRE CERRADO -->
   <div class="screen" id="screen2">
     <h2 class="step-title">Una cartita para ti 💌</h2>
     <div class="interactive-stage" onclick="nextScreen(3)">
@@ -389,7 +400,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 3 -->
+  <!-- PANTALLA 3: ABRIR SOBRE -->
   <div class="screen" id="screen3">
     <h2 class="step-title">¡Ábrelo! ✨</h2>
     <div class="interactive-stage" onclick="nextScreen(4)">
@@ -407,7 +418,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 4 -->
+  <!-- PANTALLA 4: EXTRAER CARTA -->
   <div class="screen" id="screen4">
     <h2 class="step-title">¿Qué dirá? 💭</h2>
     <div class="interactive-stage" onclick="nextScreen(5)">
@@ -425,7 +436,7 @@
     </div>
   </div>
 
-  <!-- SCREEN 5: FINAL LETTER CARD -->
+  <!-- PANTALLA 5: CARTA FINAL COMPLETA -->
   <div class="screen screen-letter-container" id="screen5">
     <div class="notebook-paper" id="letterContent">
       <h3>Querida cherry,</h3>
@@ -435,7 +446,6 @@
       <p>Eres mi persona favorita, esa persona a la que quiero contarle mis cosas, con quien quiero compartir mis alegrías y a quien también quisiera acompañar en los días difíciles. Me gusta saber de ti, escucharte, hacerte reír y recordarte que no tienes que enfrentar todo a solas. Quiero ser alguien que te dé tranquilidad, cariño y motivos para sonreír.</p>
       <p>Te admiro y te valoro más de lo que a veces sé expresar. Gracias por ser tú, por cada conversación, por cada risa y por cada instante que se vuelve especial simplemente porque estás en él. Ojalá nunca dudes de lo importante que eres para mí. Si alguna vez no encuentro las palabras correctas, recuerda esto: mi cariño por ti es sincero, te llevo en mi corazón y me hace muy feliz tenerte en mi vida.</p>
       <p>Te amo muchísimo, mi niña bonita. Eres mi persona favorita y alguien que ocupa un lugar muy especial en mi corazón. 💗</p>
-      <p>Con todo mi amor,</p>
       <p class="letter-signature">macro 💌</p>
     </div>
 
@@ -447,238 +457,264 @@
   </div>
 
   <script>
-    let audioCtx = null;
-    let isPlaying = false;
-    let musicTimer = null;
-    let noteIndex = 0;
-    let currentScreen = 0;
-    const audioBtn = document.getElementById('audioToggle');
-    const voiceBtn = document.getElementById('voiceToggle');
+    // Variables globales para el contexto de audio y control de flujo
+    let audioCtx = null; // Instancia del AudioContext para sintetizar sonido
+    let isPlaying = false; // Estado de reproducción de la música
+    let musicTimer = null; // Temporizador del bucle musical
+    let noteIndex = 0; // Índice de la nota actual de la melodía
+    let currentScreen = 0; // Guardado de la pantalla actual activa
 
+    // Elementos DOM de los botones de la interfaz
+    const audioBtn = document.getElementById('audioToggle'); // Botón de música
+    const voiceBtn = document.getElementById('voiceToggle'); // Botón de voz
+
+    // Íconos SVG almacenados como variables de texto para intercambiar rápido
     const svgPersonSpeaking = `<svg viewBox="0 0 24 24"><path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.77 1.29 6 2H3zm12.5-11c.83 1.15.83 2.85 0 4l1.5 1.5c1.86-1.86 1.86-4.88 0-6.75l-1.5 1.25zm2.5-2.5l1.5-1.5c3.12 3.12 3.12 8.19 0 11.31l-1.5-1.5c2.34-2.34 2.34-6.14 0-8.31z"/></svg>`;
     const svgMuteSpeaking = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
 
+    // Inicializa el motor de audio web si aún no existe
     function initAudio() {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)(); // Crea nuevo contexto de audio
       }
       if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+        audioCtx.resume(); // Reanuda el audio si estaba pausado por el navegador
       }
     }
 
+    // Genera un sonido de clic suave tipo sobre/papel cada vez que se pulsa un botón
     function playClickSound() {
       try {
-        initAudio();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.08);
+        initAudio(); // Asegura que el audio esté activado
+        const osc = audioCtx.createOscillator(); // Crea oscilador de frecuencia
+        const gain = audioCtx.createGain(); // Crea nodo de volumen
+        osc.type = 'sine'; // Onda senoidal limpia
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime); // Frecuencia inicial
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.08); // Sube rápido de tono
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime); // Volumen inicial
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08); // Desvanecimiento rápido
+        osc.connect(gain); // Conecta oscilador con volumen
+        gain.connect(audioCtx.destination); // Conecta a la salida de audio de los altavoces
+        osc.start(); // Inicia sonido
+        osc.stop(audioCtx.currentTime + 0.08); // Se detiene a los 80ms
       } catch (e) {}
     }
 
+    // Genera notas de piano dulce personalizando volumen, duración y retardo
     function playPianoNote(freq, duration = 1.5, vol = 0.035, delay = 0) {
-      if (!isPlaying || !audioCtx) return;
+      if (!isPlaying || !audioCtx) return; // Si la música está pausada, no ejecuta
       setTimeout(() => {
         try {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          const filter = audioCtx.createBiquadFilter();
+          const osc = audioCtx.createOscillator(); // Crea el tono
+          const gain = audioCtx.createGain(); // Maneja envolvente de volumen
+          const filter = audioCtx.createBiquadFilter(); // Filtro para suavizar tono tipo piano
           
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          osc.type = 'triangle'; // Onda triangular estilo instrumento acústico
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime); // Frecuencia de la nota musical
 
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(1500, audioCtx.currentTime);
+          filter.type = 'lowpass'; // Filtro pasa-bajos
+          filter.frequency.setValueAtTime(1500, audioCtx.currentTime); // Corta frecuencias agudas estridentes
 
-          gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-          gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.05);
-          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime); // Inicio suave
+          gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.05); // Ataque de la nota
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration); // Resonancia decayendo
 
-          osc.connect(filter);
-          filter.connect(gain);
-          gain.connect(audioCtx.destination);
+          osc.connect(filter); // Pasa la nota por el filtro
+          filter.connect(gain); // Pasa el tono filtrado al volumen
+          gain.connect(audioCtx.destination); // Envía a altavoces
 
-          osc.start();
-          osc.stop(audioCtx.currentTime + duration);
+          osc.start(); // Comienza la nota
+          osc.stop(audioCtx.currentTime + duration); // Detiene la nota tras la duración especificada
         } catch(e) {}
       }, delay);
     }
 
+    // Melodía romántica y relajante de fondo (inspirada en "Lo Que Siento" de Cuco)
     function playMelodyLoop() {
-      if (!isPlaying) return;
-      const chords = [
-        [261.63, 329.63, 392.00, 493.88],
-        [220.00, 261.63, 329.63, 392.00],
-        [293.66, 349.23, 440.00, 523.25],
-        [196.00, 246.94, 293.66, 392.00]
-      ];
-      const currentChord = chords[Math.floor(noteIndex / 4) % chords.length];
-      const rootNote = currentChord[noteIndex % currentChord.length];
-      playPianoNote(rootNote, 1.8, 0.03);
-      const LeadNotes = [523.25, 587.33, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00];
-      const leadNote = LeadNotes[noteIndex % LeadNotes.length];
-      playPianoNote(leadNote, 1.2, 0.02, 120);
-      noteIndex++;
-    }
-
-    function startMusic() {
-      initAudio();
-      if (!isPlaying) {
-        isPlaying = true;
-        noteIndex = 0;
-        playMelodyLoop();
-        musicTimer = setInterval(playMelodyLoop, 500);
-        audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-        audioBtn.style.color = '#ff2a66';
-      }
-    }
-
-    function stopMusic() {
-      isPlaying = false;
-      if (musicTimer) clearInterval(musicTimer);
-      audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
-      audioBtn.style.color = 'var(--primary-color)';
-    }
-
-    function toggleAudio() {
-      playClickSound();
-      if (isPlaying) {
-        stopMusic();
-      } else {
-        startMusic();
-      }
-    }
-
-    // Lector de voz automatizado (Text-to-Speech)
-    let isSpeaking = false;
-    function startSpeech() {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
+      if (!isPlaying) return; // Cancela si la música está pausada
       
-      const textToRead = document.getElementById("letterContent").innerText;
-      const utterance = new SpeechSynthesisUtterance(textToRead);
-      utterance.lang = 'es-ES';
-      utterance.rate = 0.95; 
-      utterance.pitch = 1.0;
+      // Progresión de acordes lo-fi dulces: Fmaj7 -> Em7 -> Dm7 -> Cmaj7
+      const chords = [
+        [349.23, 440.00, 523.25, 659.25], // Fmaj7
+        [329.63, 392.00, 493.88, 587.33], // Em7
+        [293.66, 349.23, 440.00, 523.25], // Dm7
+        [261.63, 329.63, 392.00, 493.88]  // Cmaj7
+      ];
 
+      const currentChord = chords[Math.floor(noteIndex / 4) % chords.length]; // Selecciona acorde actual
+      const rootNote = currentChord[noteIndex % currentChord.length]; // Selecciona nota base del acorde
+      playPianoNote(rootNote, 2.2, 0.035); // Toca la nota base con resonancia larga
+
+      // Notas principales de la melodía soñadora
+      const LeadNotes = [523.25, 587.33, 659.25, 698.46, 659.25, 587.33, 523.25, 493.88];
+      const leadNote = LeadNotes[noteIndex % LeadNotes.length]; // Selecciona nota de la melodía
+      playPianoNote(leadNote, 1.5, 0.02, 130); // Toca la voz principal con un pequeño retraso
+      noteIndex++; // Avanza a la siguiente nota del ciclo
+    }
+
+    // Enciende el reproductor de música de fondo
+    function startMusic() {
+      initAudio(); // Inicia contexto de sonido
+      if (!isPlaying) {
+        isPlaying = true; // Cambia estado a reproduciendo
+        noteIndex = 0; // Reinicia contador de notas
+        playMelodyLoop(); // Ejecuta primera nota
+        musicTimer = setInterval(playMelodyLoop, 480); // Establece ritmo tempo constante
+        audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>'; // Actualiza icono a encendido
+        audioBtn.style.color = '#ff2a66'; // Cambia color del botón
+      }
+    }
+
+    // Apaga el reproductor de música de fondo
+    function stopMusic() {
+      isPlaying = false; // Cambia estado a apagar
+      if (musicTimer) clearInterval(musicTimer); // Limpia el intervalo de tiempo
+      audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>'; // Restaura icono de nota musical
+      audioBtn.style.color = 'var(--primary-color)'; // Restaura color del botón
+    }
+
+    // Alterna el estado de la música al presionar el botón
+    function toggleAudio() {
+      playClickSound(); // Sonido de clic
+      if (isPlaying) {
+        stopMusic(); // Detiene si estaba sonando
+      } else {
+        startMusic(); // Inicia si estaba silenciado
+      }
+    }
+
+    // Sistema de Lectura de voz en alta voz (Text-To-Speech)
+    let isSpeaking = false; // Estado actual del lector de voz
+    
+    function startSpeech() {
+      if (!('speechSynthesis' in window)) return; // Verifica soporte en el navegador
+      window.speechSynthesis.cancel(); // Cancela cualquier lectura activa previa
+      
+      const textToRead = document.getElementById("letterContent").innerText; // Obtiene el texto de la carta
+      const utterance = new SpeechSynthesisUtterance(textToRead); // Prepara objeto de dictado
+      utterance.lang = 'es-ES'; // Idioma configurado en español
+      utterance.rate = 0.95; // Velocidad de lectura pausada y romántica
+      utterance.pitch = 1.0; // Tono de voz natural
+
+      // Evento al empezar a hablar
       utterance.onstart = function() {
         isSpeaking = true;
-        voiceBtn.innerHTML = svgMuteSpeaking;
-        voiceBtn.style.color = '#ff2a66';
+        voiceBtn.innerHTML = svgMuteSpeaking; // Cambia icono a pausar
+        voiceBtn.style.color = '#ff2a66'; // Cambia color a activo
       };
 
+      // Evento al terminar de leer toda la carta
       utterance.onend = function() {
         isSpeaking = false;
-        voiceBtn.innerHTML = svgPersonSpeaking;
-        voiceBtn.style.color = 'var(--primary-color)';
+        voiceBtn.innerHTML = svgPersonSpeaking; // Restaura icono de persona hablando
+        voiceBtn.style.color = 'var(--primary-color)'; // Restaura color
       };
 
-      window.speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(utterance); // Inicia el dictado por voz
     }
 
+    // Alterna o pausa manualmente la lectura de voz desde el botón
     function toggleSpeech() {
-      playClickSound();
+      playClickSound(); // Efecto de clic
       if (!('speechSynthesis' in window)) {
         alert("Tu navegador no soporta la lectura de voz.");
         return;
       }
 
-      // Solo permite alternar la lectura si está visible en la pantalla de la carta (Pantalla 5)
+      // Solo permite la lectura manual si el usuario se encuentra viendo la carta (Pantalla 5)
       if (currentScreen !== 5) return;
 
       if (isSpeaking) {
-        window.speechSynthesis.cancel();
+        window.speechSynthesis.cancel(); // Detiene la voz
         isSpeaking = false;
-        voiceBtn.innerHTML = svgPersonSpeaking;
+        voiceBtn.innerHTML = svgPersonSpeaking; // Cambia icono
         voiceBtn.style.color = 'var(--primary-color)';
       } else {
-        startSpeech();
+        startSpeech(); // Inicia la voz
       }
     }
 
+    // Inicia la experiencia completa al hacer clic en el botón de bienvenida
     function startExperience() {
-      playClickSound();
-      startMusic();
-      nextScreen(1);
+      playClickSound(); // Sonido de clic
+      startMusic(); // Arranca música
+      nextScreen(1); // Cambia a la Pantalla 1
     }
 
-    // Interactive Screen Navigation
+    // Navegación fluida entre pantallas
     function nextScreen(num) {
-      playClickSound();
-      currentScreen = num;
+      playClickSound(); // Sonido táctil de clic
+      currentScreen = num; // Actualiza el número de pantalla actual
 
       if (!isPlaying) {
-        startMusic();
+        startMusic(); // Asegura que la música siga activa
       }
 
-      const current = document.querySelector(".screen.active");
+      const current = document.querySelector(".screen.active"); // Busca la pantalla visible
       if (current) {
-        current.classList.remove("active");
+        current.classList.remove("active"); // Oculta la pantalla anterior
       }
 
-      const next = document.getElementById("screen" + num);
+      const next = document.getElementById("screen" + num); // Busca la nueva pantalla
       if (next) {
         setTimeout(() => {
-          next.classList.add("active");
+          next.classList.add("active"); // Muestra la nueva pantalla con transición
         }, 150);
       }
 
+      // Lógica exclusiva de la Pantalla 5 (Carta final)
       if (num === 5) {
-        burstHearts();
-        // Lee la carta únicamente cuando aparece la Pantalla 5
+        burstHearts(); // Explota lluvia de corazones flotantes
+        // ACTIVA LA LECTURA DE VOZ AUTOMÁTICA ÚNICAMENTE AL LLEGAR A LA CARTA
         setTimeout(() => {
           startSpeech();
         }, 600);
       } else {
-        // En cualquier otra pantalla, se detiene la lectura de voz inmediatamente
+        // Si el usuario se sale de la carta o regresa al inicio, DETIENE LA VOZ DE INMEDIATO
         if (isSpeaking || window.speechSynthesis) {
-          window.speechSynthesis.cancel();
+          window.speechSynthesis.cancel(); // Cancela la voz
           isSpeaking = false;
-          voiceBtn.innerHTML = svgPersonSpeaking;
+          voiceBtn.innerHTML = svgPersonSpeaking; // Restaura icono
           voiceBtn.style.color = 'var(--primary-color)';
         }
       }
     }
 
-    // Floating Hearts Canvas Particle Effect
-    const canvas = document.getElementById("hearts-canvas");
-    const ctx = canvas.getContext("2d");
-    let hearts = [];
+    // Animación de partículas de corazones flotantes en el fondo
+    const canvas = document.getElementById("hearts-canvas"); // Obtiene el elemento canvas
+    const ctx = canvas.getContext("2d"); // Obtiene el contexto 2D de dibujo
+    let hearts = []; // Arreglo que almacena los corazones activos
 
+    // Ajusta automáticamente el tamaño del canvas al cambiar la pantalla
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas); // Escucha cambios de tamaño de pantalla
+    resizeCanvas(); // Ejecuta ajuste inicial
 
+    // Clase para definir las propiedades de cada corazón individual
     class Heart {
       constructor(x, y, isBurst = false) {
-        this.x = x || Math.random() * canvas.width;
-        this.y = y || canvas.height + Math.random() * 20;
-        this.size = Math.random() * 14 + 10;
-        this.speedY = isBurst ? (Math.random() * -4 - 2) : (Math.random() * -1.5 - 0.5);
-        this.speedX = Math.random() * 1.5 - 0.75;
-        this.opacity = Math.random() * 0.7 + 0.3;
-        this.color = `hsl(${Math.random() * 20 + 340}, 100%, ${Math.random() * 20 + 65}%)`;
-        this.rotation = Math.random() * Math.PI;
+        this.x = x || Math.random() * canvas.width; // Posición X inicial
+        this.y = y || canvas.height + Math.random() * 20; // Posición Y desde abajo
+        this.size = Math.random() * 14 + 10; // Tamaño aleatorio
+        this.speedY = isBurst ? (Math.random() * -4 - 2) : (Math.random() * -1.5 - 0.5); // Velocidad vertical
+        this.speedX = Math.random() * 1.5 - 0.75; // Deriva horizontal suave
+        this.opacity = Math.random() * 0.7 + 0.3; // Transparencia inicial
+        this.color = `hsl(${Math.random() * 20 + 340}, 100%, ${Math.random() * 20 + 65}%)`; // Tonalidades rosadas
+        this.rotation = Math.random() * Math.PI; // Inclinación aleatoria
       }
 
+      // Actualiza la posición y opacidad en cada fotograma
       update() {
-        this.y += this.speedY;
-        this.x += Math.sin(this.y * 0.02) + this.speedX;
-        this.opacity -= 0.003;
+        this.y += this.speedY; // Eleva el corazón hacia arriba
+        this.x += Math.sin(this.y * 0.02) + this.speedX; // Animación de bamboleo ondulado
+        this.opacity -= 0.003; // Desvanecimiento progresivo
       }
 
+      // Dibuja la forma de corazón utilizando curvas Bezier en el canvas
       draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -700,32 +736,35 @@
       }
     }
 
+    // Genera una ráfaga especial de corazones flotantes
     function burstHearts() {
       for (let i = 0; i < 25; i++) {
         hearts.push(new Heart(canvas.width / 2 + (Math.random() * 200 - 100), canvas.height / 2 + 100, true));
       }
     }
 
+    // Bucle continuo de animación de partículas
     function animateHearts() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpia el canvas en cada fotograma
 
       if (Math.random() < 0.08) {
-        hearts.push(new Heart());
+        hearts.push(new Heart()); // Crea nuevos corazones de fondo continuamente
       }
 
       for (let i = hearts.length - 1; i >= 0; i--) {
-        hearts[i].update();
-        hearts[i].draw();
+        hearts[i].update(); // Actualiza posición
+        hearts[i].draw(); // Vuelve a dibujar
 
+        // Elimina corazones invisibles o fuera de pantalla para optimizar memoria
         if (hearts[i].opacity <= 0 || hearts[i].y < -20) {
           hearts.splice(i, 1);
         }
       }
 
-      requestAnimationFrame(animateHearts);
+      requestAnimationFrame(animateHearts); // Llama al siguiente fotograma de animación
     }
 
-    animateHearts();
+    animateHearts(); // Arranca animación de fondo
   </script>
 </body>
 </html>
