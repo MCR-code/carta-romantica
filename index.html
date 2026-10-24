@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>💖 Un correo para ti by Mireya 💖</title>
+  <title>💖 Un correo para ti by MCR 💖</title>
   
   <!-- Fonts: Dancing Script for handwritten letter & Poppins for UI -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,6 +74,12 @@
       transform: scale(1.1);
       background: #ffffff;
       box-shadow: 0 6px 20px rgba(255, 79, 129, 0.35);
+    }
+
+    .audio-control svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
     }
 
     /* Screen Containers */
@@ -317,11 +323,13 @@
 </head>
 <body>
 
-  <!-- Contenedor de Botones Flotantes (Música y Lector de Voz) -->
+  <!-- Contenedor de Botones Flotantes (Lector de Voz e Icono de Música) -->
   <div class="controls-container">
-    <!-- Botón de Voz / Lectura -->
+    <!-- Botón Lector de Voz con SVG nativo de persona hablando -->
     <button class="audio-control" id="voiceToggle" title="Leer carta en voz alta" onclick="toggleSpeech()">
-      <i class="fa-solid fa-volume-high"></i>
+      <svg id="voiceIcon" viewBox="0 0 24 24">
+        <path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.77 1.29 6 2H3zm12.5-11c.83 1.15.83 2.85 0 4l1.5 1.5c1.86-1.86 1.86-4.88 0-6.75l-1.5 1.25zm2.5-2.5l1.5-1.5c3.12 3.12 3.12 8.19 0 11.31l-1.5-1.5c2.34-2.34 2.34-6.14 0-8.31z"/>
+      </svg>
     </button>
     <!-- Botón de Música -->
     <button class="audio-control" id="audioToggle" title="Música" onclick="toggleAudio()">
@@ -443,10 +451,12 @@
     let isPlaying = false;
     let musicTimer = null;
     let noteIndex = 0;
+    let currentScreen = 0;
     const audioBtn = document.getElementById('audioToggle');
-    const voiceBtn = id('voiceToggle');
+    const voiceBtn = document.getElementById('voiceToggle');
 
-    function id(name) { return document.getElementById(name); }
+    const svgPersonSpeaking = `<svg viewBox="0 0 24 24"><path d="M9 13c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 8c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-6 4c.22-.72 3.31-2 6-2 2.7 0 5.77 1.29 6 2H3zm12.5-11c.83 1.15.83 2.85 0 4l1.5 1.5c1.86-1.86 1.86-4.88 0-6.75l-1.5 1.25zm2.5-2.5l1.5-1.5c3.12 3.12 3.12 8.19 0 11.31l-1.5-1.5c2.34-2.34 2.34-6.14 0-8.31z"/></svg>`;
+    const svgMuteSpeaking = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>`;
 
     function initAudio() {
       if (!audioCtx) {
@@ -549,6 +559,31 @@
 
     // Lector de voz automatizado (Text-to-Speech)
     let isSpeaking = false;
+    function startSpeech() {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      
+      const textToRead = document.getElementById("letterContent").innerText;
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.95; 
+      utterance.pitch = 1.0;
+
+      utterance.onstart = function() {
+        isSpeaking = true;
+        voiceBtn.innerHTML = svgMuteSpeaking;
+        voiceBtn.style.color = '#ff2a66';
+      };
+
+      utterance.onend = function() {
+        isSpeaking = false;
+        voiceBtn.innerHTML = svgPersonSpeaking;
+        voiceBtn.style.color = 'var(--primary-color)';
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
     function toggleSpeech() {
       playClickSound();
       if (!('speechSynthesis' in window)) {
@@ -556,28 +591,16 @@
         return;
       }
 
+      // Solo permite alternar la lectura si está visible en la pantalla de la carta (Pantalla 5)
+      if (currentScreen !== 5) return;
+
       if (isSpeaking) {
         window.speechSynthesis.cancel();
         isSpeaking = false;
-        voiceBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        voiceBtn.innerHTML = svgPersonSpeaking;
         voiceBtn.style.color = 'var(--primary-color)';
       } else {
-        const textToRead = document.getElementById("letterContent").innerText;
-        const utterance = new SpeechSynthesisUtterance(textToRead);
-        utterance.lang = 'es-ES'; // Configurado en español
-        utterance.rate = 0.95; // Velocidad de lectura pausada y romántica
-        utterance.pitch = 1.0;
-
-        utterance.onend = function() {
-          isSpeaking = false;
-          voiceBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-          voiceBtn.style.color = 'var(--primary-color)';
-        };
-
-        window.speechSynthesis.speak(utterance);
-        isSpeaking = true;
-        voiceBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-        voiceBtn.style.color = '#ff2a66';
+        startSpeech();
       }
     }
 
@@ -590,6 +613,7 @@
     // Interactive Screen Navigation
     function nextScreen(num) {
       playClickSound();
+      currentScreen = num;
 
       if (!isPlaying) {
         startMusic();
@@ -609,14 +633,16 @@
 
       if (num === 5) {
         burstHearts();
-        // Opcional: Si quieres que empiece a leer automáticamente al llegar a la carta, puedes descomentar la siguiente línea:
-        // setTimeout(toggleSpeech, 800);
+        // Lee la carta únicamente cuando aparece la Pantalla 5
+        setTimeout(() => {
+          startSpeech();
+        }, 600);
       } else {
-        // Si cambia de pantalla, cancela la voz si estaba hablando
-        if (isSpeaking) {
+        // En cualquier otra pantalla, se detiene la lectura de voz inmediatamente
+        if (isSpeaking || window.speechSynthesis) {
           window.speechSynthesis.cancel();
           isSpeaking = false;
-          voiceBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+          voiceBtn.innerHTML = svgPersonSpeaking;
           voiceBtn.style.color = 'var(--primary-color)';
         }
       }
