@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💖 Un correo para ti by mcr 💖</title>
+  
+  <!-- Fonts: Dancing Script for handwritten letter & Poppins for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for controls -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-color: #ff4f81;
+      --primary-hover: #e03867;
+      --bg-gradient: linear-gradient(135deg, #ffe6eb 0%, #ffd1dc 100%);
+      --card-bg: #fffdfa;
+      --text-dark: #333333;
+      --letter-text: #2c2c2c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      color: var(--text-dark);
+      padding: 20px 10px;
+      position: relative;
+    }
+
+    /* Ambient Music Toggle Button */
+    .audio-control {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 2px solid #ffccd5;
+      color: var(--primary-color);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 79, 129, 0.2);
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+    }
+
+    .audio-control:hover {
+      transform: scale(1.1);
+      background: #ffffff;
+      box-shadow: 0 6px 20px rgba(255, 79, 129, 0.35);
+    }
+
+    /* Screen Containers */
+    .screen {
+      display: none;
+      width: 100%;
+      max-width: 650px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.92) translateY(10px);
+      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Step Titles */
+    .step-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #b8325a;
+      margin-bottom: 25px;
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.5px;
+    }
+
+    /* Interactive Envelope Stage Cards */
+    .interactive-stage {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 40px 20px;
+      box-shadow: 0 10px 30px rgba(200, 80, 110, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+
+    .interactive-stage:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(200, 80, 110, 0.25);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* SVG Illustration Container */
+    .svg-wrapper {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .svg-wrapper svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.08));
+      transition: transform 0.4s ease;
+    }
+
+    .interactive-stage:hover .svg-wrapper svg {
+      transform: scale(1.08) rotate(2deg);
+    }
+
+    .click-hint {
+      display: inline-block;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      background: #ffe6ed;
+      padding: 8px 18px;
+      border-radius: 20px;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Start Button for Intro Screen */
+    .start-btn {
+      background: var(--primary-color);
+      color: #ffffff;
+      border: none;
+      padding: 16px 36px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(255, 79, 129, 0.4);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .start-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(255, 79, 129, 0.5);
+    }
+
+    /* Screen 5: Realistic Notebook Paper Letter */
+    .screen-letter-container {
+      width: 100%;
+      max-width: 750px;
+    }
+
+    .notebook-paper {
+      background: var(--card-bg);
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        #e2d5de 31px,
+        #e2d5de 32px
+      );
+      line-height: 32px;
+      border-radius: 4px;
+      padding: 40px 45px 40px 65px;
+      border-left: 3px double #ffb3c1;
+      border-right: 1px solid #f0e6ed;
+      border-top: 1px solid #f0e6ed;
+      border-bottom: 1px solid #f0e6ed;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 0 3px 10px rgba(0, 0, 0, 0.05);
+      text-align: left;
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    /* Red vertical margin line like real lined notebook paper */
+    .notebook-paper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 45px;
+      width: 2px;
+      background-color: #ff9ebb;
+    }
+
+    .notebook-paper h3 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.3rem;
+      color: #3d2a35;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .notebook-paper p {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.55rem;
+      color: var(--letter-text);
+      margin-bottom: 20px;
+      word-spacing: 2px;
+    }
+
+    .letter-signature {
+      text-align: right;
+      font-weight: 700;
+      margin-top: 20px;
+    }
+
+    /* Return Button */
+    .return-btn {
+      background: var(--primary-color);
+      color: #ffffff;
+      border: none;
+      padding: 12px 32px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 79, 129, 0.35);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .return-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 79, 129, 0.45);
+    }
+
+    /* Floating Hearts Canvas */
+    #hearts-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Mobile Responsive Tweaks */
+    @media (max-width: 600px) {
+      .step-title {
+        font-size: 1.5rem;
+      }
+      .notebook-paper {
+        padding: 30px 25px 30px 45px;
+        line-height: 28px;
+        background-image: repeating-linear-gradient(
+          transparent,
+          transparent 27px,
+          #e2d5de 27px,
+          #e2d5de 28px
+        );
+      }
+      .notebook-paper::before {
+        left: 30px;
+      }
+      .notebook-paper h3 {
+        font-size: 1.9rem;
+      }
+      .notebook-paper p {
+        font-size: 1.3rem;
+      }
+      .svg-wrapper {
+        width: 160px;
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audios en segundo plano -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="clickSound" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Audio Toggle Control -->
+  <button class="audio-control" id="audioToggle" title="Música" onclick="toggleAudio()">
+    <i class="fa-solid fa-music"></i>
+  </button>
+
+  <!-- Floating Hearts Particles Canvas -->
+  <canvas id="hearts-canvas"></canvas>
+
+  <!-- SCREEN INTRO: PORTADA PARA ACTIVAR LA MÚSICA DE INMEDIATO -->
+  <div class="screen active" id="screen0">
+    <h2 class="step-title">Tienes un mensaje especial 💖</h2>
+    <div class="interactive-stage" onclick="startExperience()">
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 165 C100 165 30 115 30 70 C30 45 50 25 75 25 C90 25 100 35 100 35 C100 35 110 25 125 25 C150 25 170 45 170 70 C170 115 100 165 100 165Z" fill="#FF4F81"/>
+          <path d="M100 150 C100 150 40 105 40 65 C40 45 55 35 75 35 C88 35 100 45 100 45 C100 45 112 35 125 35 C145 35 160 45 160 65 C160 105 100 150 100 150Z" fill="#FF758F"/>
+        </svg>
+      </div>
+      <button class="start-btn">
+        <i class="fa-solid fa-envelope-open-text"></i> Toca aquí para abrir tu sorpresa
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN 1 -->
+  <div class="screen" id="screen1">
+    <h2 class="step-title">Hola, te llegó un correo 📬</h2>
+    <div class="interactive-stage" onclick="nextScreen(2)">
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="70" width="120" height="90" rx="12" fill="#FF85A1"/>
+          <path d="M40 80L100 120L160 80" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="150" cy="65" r="18" fill="#FF2A66"/>
+          <path d="M150 56V67M150 72H150.01" stroke="white" stroke-width="3" stroke-linecap="round"/>
+          <path d="M70 160V185M130 160V185" stroke="#D16B84" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Haz clic para revisar</span>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 -->
+  <div class="screen" id="screen2">
+    <h2 class="step-title">Una cartita para ti 💌</h2>
+    <div class="interactive-stage" onclick="nextScreen(3)">
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="30" y="60" width="140" height="95" rx="10" fill="#FFB3C1"/>
+          <path d="M30 65L100 115L170 65" stroke="#FF758F" stroke-width="5" stroke-linejoin="round"/>
+          <circle cx="100" cy="115" r="18" fill="#FF2A66"/>
+          <path d="M100 122C100 122 91 116 91 110.5C91 107.5 93.5 105 96.5 105C98.2 105 99.5 106 100 107C100.5 106 101.8 105 103.5 105C106.5 105 109 107.5 109 110.5C109 116 100 122 100 122Z" fill="white"/>
+        </svg>
+      </div>
+      <span class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Presiona para continuar</span>
+    </div>
+  </div>
+
+  <!-- SCREEN 3 -->
+  <div class="screen" id="screen3">
+    <h2 class="step-title">¡Ábrelo! ✨</h2>
+    <div class="interactive-stage" onclick="nextScreen(4)">
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 70L100 30L170 70V150H30V70Z" fill="#FFA6B9"/>
+          <rect x="45" y="50" width="110" height="70" rx="4" fill="#FFFFFF"/>
+          <line x1="55" y1="65" x2="115" y2="65" stroke="#FF85A1" stroke-width="4" stroke-linecap="round"/>
+          <line x1="55" y1="80" x2="135" y2="80" stroke="#FFCCD5" stroke-width="3" stroke-linecap="round"/>
+          <line x1="55" y1="95" x2="100" y2="95" stroke="#FFCCD5" stroke-width="3" stroke-linecap="round"/>
+          <path d="M30 80L100 125L170 80V155C170 160 165 165 160 165H40C35 165 30 160 30 155V80Z" fill="#FF758F"/>
+        </svg>
+      </div>
+      <span class="click-hint"><i class="fa-solid fa-envelope-open"></i> Abrir sobre</span>
+    </div>
+  </div>
+
+  <!-- SCREEN 4 -->
+  <div class="screen" id="screen4">
+    <h2 class="step-title">¿Qué dirá? 💭</h2>
+    <div class="interactive-stage" onclick="nextScreen(5)">
+      <div class="svg-wrapper">
+        <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="30" width="120" height="140" rx="6" fill="#FFFFFF" stroke="#FFB3C1" stroke-width="3"/>
+          <path d="M60 55 C 60 55, 75 45, 90 55 C 105 65, 120 55, 120 55" stroke="#FF4F81" stroke-width="3" stroke-linecap="round"/>
+          <line x1="55" y1="80" x2="145" y2="80" stroke="#E2D5DE" stroke-width="3" stroke-linecap="round"/>
+          <line x1="55" y1="100" x2="145" y2="100" stroke="#E2D5DE" stroke-width="3" stroke-linecap="round"/>
+          <line x1="55" y1="120" x2="145" y2="120" stroke="#E2D5DE" stroke-width="3" stroke-linecap="round"/>
+          <path d="M130 145C130 145 124 140 124 136C124 134 125.5 132 127.5 132C128.6 132 129.5 133 130 134C130.5 133 131.4 132 132.5 132C134.5 132 136 134 136 136C136 140 130 145 130 145Z" fill="#FF4F81"/>
+        </svg>
+      </div>
+      <span class="click-hint"><i class="fa-solid fa-heart"></i> Leer mensaje</span>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: FINAL LETTER CARD -->
+  <div class="screen screen-letter-container" id="screen5">
+    <div class="notebook-paper">
+      <h3>Querida cherry,</h3>
+      <p>No sé muy bien cómo empezar esta carta, porque hay sentimientos tan bonitos que a veces las palabras se quedan pequeñas. Aun así, quería tomarme un momento para recordarte lo muchísimo que significas para mí. Desde que llegaste a mi vida, hay cosas que se sienten más bonitas; incluso un día normal puede convertirse en uno especial con solo hablar contigo.</p>
+      <p>Me encanta tu forma de ser, cómo hablas, cómo me haces sonreír sin darte cuenta y cómo puedes mejorar mi día con un mensaje tuyo. A veces pienso en ti de la nada y sonrío, porque me hace feliz saber que existes y que tengo la oportunidad de conocerte cada vez más.</p>
+      <p>Quiero que sepas algo muy importante: te amo. Te amo por lo que eres, por tu manera de hacerme sentir y por esos pequeños detalles tuyos que quizá para ti sean simples, pero para mí significan muchísimo. No necesito que todo sea perfecto; me basta con que podamos ser sinceros, cuidarnos y seguir creando recuerdos bonitos juntos.</p>
+      <p>Eres mi persona favorita, esa persona a la que quiero contarle mis cosas, con quien quiero compartir mis alegrías y a quien también quisiera acompañar en los días difíciles. Me gusta saber de ti, escucharte, hacerte reír y recordarte que no tienes que enfrentar todo a solas. Quiero ser alguien que te dé tranquilidad, cariño y motivos para sonreír.</p>
+      <p>Te admiro y te valoro más de lo que a veces sé expresar. Gracias por ser tú, por cada conversación, por cada risa y por cada instante que se vuelve especial simplemente porque estás en él. Ojalá nunca dudes de lo importante que eres para mí. Si alguna vez no encuentro las palabras correctas, recuerda esto: mi cariño por ti es sincero, te llevo en mi corazón y me me hace muy feliz tenerte en mi vida.</p>
+      <p>Te amo muchísimo, mi niña bonita. Eres mi persona favorita y alguien que ocupa un lugar muy especial en mi corazón. 💗</p>
+      <p>Con todo mi amor,</p>
+      <p class="letter-signature">macro 💌</p>
+    </div>
+
+    <div>
+      <button class="return-btn" onclick="nextScreen(1)">
+        <i class="fa-solid fa-rotate-left"></i> Regresar al inicio
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const bgMusic = document.getElementById("bgMusic");
+    const clickSound = document.getElementById("clickSound");
+    const audioBtn = document.getElementById('audioToggle');
+    let isPlaying = false;
+
+    bgMusic.volume = 0.35;
+    clickSound.volume = 0.5;
+
+    function startMusic() {
+      bgMusic.play().then(() => {
+        isPlaying = true;
+        audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        audioBtn.style.color = '#ff2a66';
+      }).catch(() => {});
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        bgMusic.pause();
+        isPlaying = false;
+        audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+        audioBtn.style.color = 'var(--primary-color)';
+      } else {
+        startMusic();
+      }
+    }
+
+    // Inicia la experiencia al tocar la portada
+    function startExperience() {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+      startMusic();
+      nextScreen(1);
+    }
+
+    // Interactive Screen Navigation
+    function nextScreen(num) {
+      clickSound.currentTime = 0;
+      clickSound.play().catch(() => {});
+
+      if (!isPlaying) {
+        startMusic();
+      }
+
+      const current = document.querySelector(".screen.active");
+      if (current) {
+        current.classList.remove("active");
+      }
+
+      const next = document.getElementById("screen" + num);
+      if (next) {
+        setTimeout(() => {
+          next.classList.add("active");
+        }, 150);
+      }
+
+      if (num === 5) {
+        burstHearts();
+      }
+    }
+
+    // Floating Hearts Canvas Particle Effect
+    const canvas = document.getElementById("hearts-canvas");
+    const ctx = canvas.getContext("2d");
+    let hearts = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    class Heart {
+      constructor(x, y, isBurst = false) {
+        this.x = x || Math.random() * canvas.width;
+        this.y = y || canvas.height + Math.random() * 20;
+        this.size = Math.random() * 14 + 10;
+        this.speedY = isBurst ? (Math.random() * -4 - 2) : (Math.random() * -1.5 - 0.5);
+        this.speedX = Math.random() * 1.5 - 0.75;
+        this.opacity = Math.random() * 0.7 + 0.3;
+        this.color = `hsl(${Math.random() * 20 + 340}, 100%, ${Math.random() * 20 + 65}%)`;
+        this.rotation = Math.random() * Math.PI;
+      }
+
+      update() {
+        this.y += this.speedY;
+        this.x += Math.sin(this.y * 0.02) + this.speedX;
+        this.opacity -= 0.003;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.fillStyle = this.color;
+        
+        ctx.beginPath();
+        const topCurveHeight = this.size * 0.3;
+        ctx.moveTo(0, topCurveHeight);
+        ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+        ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+        ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+        ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    function burstHearts() {
+      for (let i = 0; i < 25; i++) {
+        hearts.push(new Heart(canvas.width / 2 + (Math.random() * 200 - 100), canvas.height / 2 + 100, true));
+      }
+    }
+
+    function animateHearts() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (Math.random() < 0.08) {
+        hearts.push(new Heart());
+      }
+
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        hearts[i].update();
+        hearts[i].draw();
+
+        if (hearts[i].opacity <= 0 || hearts[i].y < -20) {
+          hearts.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animateHearts);
+    }
+
+    animateHearts();
+  </script>
+</body>
+</html>
