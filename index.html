@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>💖 Un correo para ti by mcr 💖</title>
+  <title>💖 Un correo para ti by Mireya 💖</title>
   
   <!-- Fonts: Dancing Script for handwritten letter & Poppins for UI -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,12 +43,17 @@
       position: relative;
     }
 
-    /* Ambient Music Toggle Button */
-    .audio-control {
+    /* Ambient Music & Speech Control Buttons Container */
+    .controls-container {
       position: fixed;
       top: 20px;
       right: 20px;
       z-index: 100;
+      display: flex;
+      gap: 10px;
+    }
+
+    .audio-control {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(8px);
       border: 2px solid #ffccd5;
@@ -312,19 +317,17 @@
 </head>
 <body>
 
-  <!-- Audios en segundo plano -->
-  <audio id="bgMusic" loop preload="auto">
-    <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3" type="audio/mpeg">
-  </audio>
-
-  <audio id="clickSound" preload="auto">
-    <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Audio Toggle Control -->
-  <button class="audio-control" id="audioToggle" title="Música" onclick="toggleAudio()">
-    <i class="fa-solid fa-music"></i>
-  </button>
+  <!-- Contenedor de Botones Flotantes (Música y Lector de Voz) -->
+  <div class="controls-container">
+    <!-- Botón de Voz / Lectura -->
+    <button class="audio-control" id="voiceToggle" title="Leer carta en voz alta" onclick="toggleSpeech()">
+      <i class="fa-solid fa-volume-high"></i>
+    </button>
+    <!-- Botón de Música -->
+    <button class="audio-control" id="audioToggle" title="Música" onclick="toggleAudio()">
+      <i class="fa-solid fa-music"></i>
+    </button>
+  </div>
 
   <!-- Floating Hearts Particles Canvas -->
   <canvas id="hearts-canvas"></canvas>
@@ -416,13 +419,13 @@
 
   <!-- SCREEN 5: FINAL LETTER CARD -->
   <div class="screen screen-letter-container" id="screen5">
-    <div class="notebook-paper">
+    <div class="notebook-paper" id="letterContent">
       <h3>Querida cherry,</h3>
       <p>No sé muy bien cómo empezar esta carta, porque hay sentimientos tan bonitos que a veces las palabras se quedan pequeñas. Aun así, quería tomarme un momento para recordarte lo muchísimo que significas para mí. Desde que llegaste a mi vida, hay cosas que se sienten más bonitas; incluso un día normal puede convertirse en uno especial con solo hablar contigo.</p>
       <p>Me encanta tu forma de ser, cómo hablas, cómo me haces sonreír sin darte cuenta y cómo puedes mejorar mi día con un mensaje tuyo. A veces pienso en ti de la nada y sonrío, porque me hace feliz saber que existes y que tengo la oportunidad de conocerte cada vez más.</p>
       <p>Quiero que sepas algo muy importante: te amo. Te amo por lo que eres, por tu manera de hacerme sentir y por esos pequeños detalles tuyos que quizá para ti sean simples, pero para mí significan muchísimo. No necesito que todo sea perfecto; me basta con que podamos ser sinceros, cuidarnos y seguir creando recuerdos bonitos juntos.</p>
       <p>Eres mi persona favorita, esa persona a la que quiero contarle mis cosas, con quien quiero compartir mis alegrías y a quien también quisiera acompañar en los días difíciles. Me gusta saber de ti, escucharte, hacerte reír y recordarte que no tienes que enfrentar todo a solas. Quiero ser alguien que te dé tranquilidad, cariño y motivos para sonreír.</p>
-      <p>Te admiro y te valoro más de lo que a veces sé expresar. Gracias por ser tú, por cada conversación, por cada risa y por cada instante que se vuelve especial simplemente porque estás en él. Ojalá nunca dudes de lo importante que eres para mí. Si alguna vez no encuentro las palabras correctas, recuerda esto: mi cariño por ti es sincero, te llevo en mi corazón y me me hace muy feliz tenerte en mi vida.</p>
+      <p>Te admiro y te valoro más de lo que a veces sé expresar. Gracias por ser tú, por cada conversación, por cada risa y por cada instante que se vuelve especial simplemente porque estás en él. Ojalá nunca dudes de lo importante que eres para mí. Si alguna vez no encuentro las palabras correctas, recuerda esto: mi cariño por ti es sincero, te llevo en mi corazón y me hace muy feliz tenerte en mi vida.</p>
       <p>Te amo muchísimo, mi niña bonita. Eres mi persona favorita y alguien que ocupa un lugar muy especial en mi corazón. 💗</p>
       <p>Con todo mi amor,</p>
       <p class="letter-signature">macro 💌</p>
@@ -436,45 +439,157 @@
   </div>
 
   <script>
-    const bgMusic = document.getElementById("bgMusic");
-    const clickSound = document.getElementById("clickSound");
-    const audioBtn = document.getElementById('audioToggle');
+    let audioCtx = null;
     let isPlaying = false;
+    let musicTimer = null;
+    let noteIndex = 0;
+    const audioBtn = document.getElementById('audioToggle');
+    const voiceBtn = id('voiceToggle');
 
-    bgMusic.volume = 0.35;
-    clickSound.volume = 0.5;
+    function id(name) { return document.getElementById(name); }
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playClickSound() {
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.08);
+      } catch (e) {}
+    }
+
+    function playPianoNote(freq, duration = 1.5, vol = 0.035, delay = 0) {
+      if (!isPlaying || !audioCtx) return;
+      setTimeout(() => {
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          const filter = audioCtx.createBiquadFilter();
+          
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1500, audioCtx.currentTime);
+
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+      }, delay);
+    }
+
+    function playMelodyLoop() {
+      if (!isPlaying) return;
+      const chords = [
+        [261.63, 329.63, 392.00, 493.88],
+        [220.00, 261.63, 329.63, 392.00],
+        [293.66, 349.23, 440.00, 523.25],
+        [196.00, 246.94, 293.66, 392.00]
+      ];
+      const currentChord = chords[Math.floor(noteIndex / 4) % chords.length];
+      const rootNote = currentChord[noteIndex % currentChord.length];
+      playPianoNote(rootNote, 1.8, 0.03);
+      const LeadNotes = [523.25, 587.33, 659.25, 587.33, 523.25, 493.88, 440.00, 392.00];
+      const leadNote = LeadNotes[noteIndex % LeadNotes.length];
+      playPianoNote(leadNote, 1.2, 0.02, 120);
+      noteIndex++;
+    }
 
     function startMusic() {
-      bgMusic.play().then(() => {
+      initAudio();
+      if (!isPlaying) {
         isPlaying = true;
+        noteIndex = 0;
+        playMelodyLoop();
+        musicTimer = setInterval(playMelodyLoop, 500);
         audioBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
         audioBtn.style.color = '#ff2a66';
-      }).catch(() => {});
+      }
+    }
+
+    function stopMusic() {
+      isPlaying = false;
+      if (musicTimer) clearInterval(musicTimer);
+      audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
+      audioBtn.style.color = 'var(--primary-color)';
     }
 
     function toggleAudio() {
+      playClickSound();
       if (isPlaying) {
-        bgMusic.pause();
-        isPlaying = false;
-        audioBtn.innerHTML = '<i class="fa-solid fa-music"></i>';
-        audioBtn.style.color = 'var(--primary-color)';
+        stopMusic();
       } else {
         startMusic();
       }
     }
 
-    // Inicia la experiencia al tocar la portada
+    // Lector de voz automatizado (Text-to-Speech)
+    let isSpeaking = false;
+    function toggleSpeech() {
+      playClickSound();
+      if (!('speechSynthesis' in window)) {
+        alert("Tu navegador no soporta la lectura de voz.");
+        return;
+      }
+
+      if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        voiceBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        voiceBtn.style.color = 'var(--primary-color)';
+      } else {
+        const textToRead = document.getElementById("letterContent").innerText;
+        const utterance = new SpeechSynthesisUtterance(textToRead);
+        utterance.lang = 'es-ES'; // Configurado en español
+        utterance.rate = 0.95; // Velocidad de lectura pausada y romántica
+        utterance.pitch = 1.0;
+
+        utterance.onend = function() {
+          isSpeaking = false;
+          voiceBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+          voiceBtn.style.color = 'var(--primary-color)';
+        };
+
+        window.speechSynthesis.speak(utterance);
+        isSpeaking = true;
+        voiceBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        voiceBtn.style.color = '#ff2a66';
+      }
+    }
+
     function startExperience() {
-      clickSound.currentTime = 0;
-      clickSound.play().catch(() => {});
+      playClickSound();
       startMusic();
       nextScreen(1);
     }
 
     // Interactive Screen Navigation
     function nextScreen(num) {
-      clickSound.currentTime = 0;
-      clickSound.play().catch(() => {});
+      playClickSound();
 
       if (!isPlaying) {
         startMusic();
@@ -494,6 +609,16 @@
 
       if (num === 5) {
         burstHearts();
+        // Opcional: Si quieres que empiece a leer automáticamente al llegar a la carta, puedes descomentar la siguiente línea:
+        // setTimeout(toggleSpeech, 800);
+      } else {
+        // Si cambia de pantalla, cancela la voz si estaba hablando
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          isSpeaking = false;
+          voiceBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+          voiceBtn.style.color = 'var(--primary-color)';
+        }
       }
     }
 
